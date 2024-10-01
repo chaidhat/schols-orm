@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-const orm = require('../orm');
+const orm = require('../lib/orm');
 
 function randomStr() {
     const length = 8;
