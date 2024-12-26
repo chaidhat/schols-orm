@@ -59,20 +59,23 @@ async function runTests() {
 
             await cleanupTests();
         });
-        xdescribe('create tests', function () {
+        describe('create tests', function () {
             require('./create-tests');
         });
-        xdescribe('select tests', function () {
+        describe('select tests', function () {
             require('./select-tests');
         });
-        xdescribe('insert tests', function () {
+        describe('insert tests', function () {
             require('./insert-tests');
         });
-        xdescribe('update tests', function () {
+        describe('update tests', function () {
             require('./update-tests');
         });
-        xdescribe('del tests', function () {
+        describe('del tests', function () {
             require('./del-tests');
+        });
+        describe('transaction tests', function () {
+            require('./transaction-tests');
         });
     });
 }
