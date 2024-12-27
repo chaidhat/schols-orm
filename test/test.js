@@ -68,7 +68,7 @@ async function runTests() {
         xdescribe('insert tests', function () {
             require('./insert-tests');
         });
-        xdescribe('update tests', function () {
+        describe('update tests', function () {
             require('./update-tests');
         });
         xdescribe('del tests', function () {
