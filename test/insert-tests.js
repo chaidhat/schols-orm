@@ -53,6 +53,21 @@ it('can insert into table', async function () {
         common.MAX_LEN
     );
 
+    // verify
+    // ensure all keys are UNIQUE
+    for (let i = 0; i < res.length; i++) {
+        for (let j = 0; j < res.length; j++) {
+            if (i !== j) {
+                assert.notEqual(
+                    res[i].debugTestTableId,
+                    res[j].debugTestTableId,
+                    "Inserting results in non unique keys"
+                );
+            }
+        }
+    }
+
+    // verify all other values
     for (let i = 0; i < res.length; i++) {
         assert.equal(
             res[i].debugTestTableId,
@@ -69,6 +84,100 @@ it('can insert into table', async function () {
         assert.equal(
             orm.readBool(res[i].c),
             mem[i].c
+        );
+    }
+});
+
+it('can insert into table (race condition stress test)', async function () {
+    this.timeout(0);  // Disable timeout for this test
+    // setup 
+    options.debugTestTable = new orm.DatabaseTable(`DebugTestTable`,
+        "debugTestTableId",
+        [
+            {
+                name: "secondaryKey",
+                type: "int"
+            },
+            {
+                name: "b",
+                type: "varchar(256)"
+            },
+            {
+                name: "c",
+                type: "bit"
+            },
+        ]);
+    await options.debugTestTable.init();
+
+    const mem = [];
+    const insertPromises = [];
+    for (let i = 0; i < common.MAX_LEN; i++) {
+        let secondaryKey = 0;
+        do {
+            secondaryKey = randomInt();
+        } while (mem.some(x => x.secondaryKey === secondaryKey));
+        mem[i] = {
+            secondaryKey: secondaryKey,
+            b: randomStr(),
+            c: randomInt() > 0,
+        };
+        // do this in parallel
+        // Queue the insert function concurrently using setImmediate
+        insertPromises.push(new Promise((resolve, reject) => {
+            setImmediate(async () => {
+                try {
+                    await options.debugTestTable.insertInto({
+                        secondaryKey: mem[i].secondaryKey,
+                        b: mem[i].b,
+                        c: mem[i].c
+                    });
+                    resolve(null);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }));
+    }
+
+    // Await all insertions concurrently
+    await Promise.all(insertPromises);
+
+    // test
+    const res = await orm.adminQuery(`SELECT * FROM DebugTestTable ORDER BY debugTestTableId ASC`);
+    assert.equal(
+        res.length,
+        mem.length
+    );
+
+    // verify
+    // ensure all keys are UNIQUE
+    for (let i = 0; i < res.length; i++) {
+        for (let j = 0; j < res.length; j++) {
+            if (i !== j) {
+                assert.notEqual(
+                    res[i].debugTestTableId,
+                    res[j].debugTestTableId,
+                    "Inserting results in non unique keys"
+                );
+            }
+        }
+    }
+
+    // verify all other values
+    for (let i = 0; i < res.length; i++) {
+        const memItem = mem.find(x => x.secondaryKey === res[i].secondaryKey);
+        assert.notEqual(memItem, undefined);
+        assert.equal(
+            res[i].secondaryKey,
+            memItem.secondaryKey
+        );
+        assert.equal(
+            res[i].b,
+            memItem.b
+        );
+        assert.equal(
+            orm.readBool(res[i].c),
+            memItem.c
         );
     }
 });
@@ -139,6 +248,7 @@ it('should fail when insertInto() with nonexistent properties', async function (
 });
 
 it('should insert into one-to-many relation', async function () {
+    this.timeout(0);  // Disable timeout for this test
     options.debugTestTable0 = new orm.DatabaseTable(`DebugTestTable0`,
         "debugTestTable0Id",
         [
@@ -199,6 +309,7 @@ it('should insert into one-to-many relation', async function () {
             c: randomInt() > 0,
             d: d,
         };
+        console.log("start big insert")
         await options.debugTestTable.insertInto(
             {
                 a: mem[i].a,
@@ -207,6 +318,7 @@ it('should insert into one-to-many relation', async function () {
                 d: mem[i].d.map((x) => {return {da: x.da, db: x.db}}),
                 // d is an array of [{da: 123, db: "abc"}, {da: 234, db: "def"}, ... ]
             });
+        console.log("done big insert")
     }
 
     // test
@@ -259,6 +371,7 @@ it('should insert into one-to-many relation', async function () {
 });
 
 it('should fail when insert into one-to-many relation with non array', async function () {
+    this.timeout(0);  // Disable timeout for this test
     options.debugTestTable0 = new orm.DatabaseTable(`DebugTestTable0`,
         "debugTestTable0Id",
         [
@@ -313,5 +426,66 @@ it('should fail when insert into one-to-many relation with non array', async fun
                     db: randomStr(),
                 }
             });
+    });
+    it('can insert into table', async function () {
+        // setup 
+        options.debugTestTable = new orm.DatabaseTable(`DebugTestTable`,
+            "debugTestTableId",
+            [
+                {
+                    name: "a",
+                    type: "int"
+                },
+                {
+                    name: "b",
+                    type: "varchar(256)"
+                },
+                {
+                    name: "c",
+                    type: "bit"
+                },
+            ]);
+        await options.debugTestTable.init();
+
+        const mem = [];
+        for (let i = 0; i < common.MAX_LEN; i++) {
+            mem[i] = {
+                a: randomInt(),
+                b: randomStr(),
+                c: randomInt() > 0,
+            };
+            await options.debugTestTable.insertInto(
+                {
+                    a: mem[i].a,
+                    b: mem[i].b,
+                    c: mem[i].c
+                });
+        }
+
+        // test
+        const res = await orm.adminQuery(`SELECT * FROM DebugTestTable ORDER BY debugTestTableId ASC`);
+        assert.equal(
+            res.length,
+            common.MAX_LEN
+        );
+
+        for (let i = 0; i < res.length; i++) {
+            assert.equal(
+                res[i].debugTestTableId,
+                i + 1
+            );
+            assert.equal(
+                res[i].a,
+                mem[i].a
+            );
+            assert.equal(
+                res[i].b,
+                mem[i].b
+            );
+            assert.equal(
+                orm.readBool(res[i].c),
+                mem[i].c
+            );
+        }
     });
 });

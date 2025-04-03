@@ -65,10 +65,10 @@ async function runTests() {
         xdescribe('select tests', function () {
             require('./select-tests');
         });
-        xdescribe('insert tests', function () {
+        describe('insert tests', function () {
             require('./insert-tests');
         });
-        describe('update tests', function () {
+        xdescribe('update tests', function () {
             require('./update-tests');
         });
         xdescribe('del tests', function () {

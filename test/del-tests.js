@@ -272,3 +272,74 @@ it('can delete table with one-to-many relation', async function () {
         });
     });
 });
+
+/*
+it("can delete by passing array into the where property", async function () {
+    // setup 
+    options.debugTestTable = new orm.DatabaseTable(`DebugTestTable`,
+        "debugTestTableId",
+        [
+            {
+                name: "a",
+                type: "int"
+            },
+            {
+                name: "b",
+                type: "varchar(256)"
+            },
+            {
+                name: "c",
+                type: "bit"
+            },
+        ]);
+    await options.debugTestTable.init();
+
+    const mem = [];
+    for (let i = 0; i < common.MAX_LEN; i++) {
+        mem[i] = {
+            debugTestTableId: i + 1,
+            a: randomInt(),
+            b: randomStr(),
+            c: randomInt() > 0,
+        };
+        await orm.adminQuery(`INSERT INTO DebugTestTable (debugTestTableId, a,b,c) VALUES (${mem[i].debugTestTableId}, ${mem[i].a}, "${mem[i].b}", ${mem[i].c})`);
+    }
+
+    // test
+    for (let i = 0; i < 10; i++) {
+        let randomIndex1;
+        let randomIndex2;
+        do {
+            randomIndex1 = randomInt(1, common.MAX_LEN);
+            randomIndex2 = randomInt(1, common.MAX_LEN);
+        } while (randomIndex1 === randomIndex2);
+
+        const res = await options.debugTestTable.deleteFrom({ debugTestTableId: [mem[randomIndex1 - 1].debugTestTableId, mem[randomIndex2 - 1].debugTestTableId] });
+
+        if (randomIndex1 > randomIndex2) [randomIndex1, randomIndex2] = [randomIndex2, randomIndex1];
+        mem.splice(randomIndex1 - 1, 1);
+        mem.splice(randomIndex2 - 1, 1);
+    }
+
+    // verify
+    const res = await orm.adminQuery(`SELECT * FROM DebugTestTable ORDER BY debugTestTableId ASC`);
+    for (let i = 0; i < mem.length; i++) {
+        assert.equal(
+            res[i].debugTestTableId,
+            mem[i].debugTestTableId
+        );
+        assert.equal(
+            res[i].a,
+            mem[i].a
+        );
+        assert.equal(
+            res[i].b,
+            mem[i].b
+        );
+        assert.equal(
+            orm.readBool(res[i].c),
+            mem[i].c
+        );
+    }
+});
+*/

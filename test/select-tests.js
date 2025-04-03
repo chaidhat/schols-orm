@@ -204,7 +204,7 @@ it("can select by passing multiple properties into where", async function () {
         );
     }
 });
-it("can select by passing array into a where property", async function () {
+it("can select by passing array into the where property", async function () {
     // setup 
     options.debugTestTable = new orm.DatabaseTable(`DebugTestTable`,
         "debugTestTableId",
