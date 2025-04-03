@@ -309,7 +309,6 @@ it('should insert into one-to-many relation', async function () {
             c: randomInt() > 0,
             d: d,
         };
-        console.log("start big insert")
         await options.debugTestTable.insertInto(
             {
                 a: mem[i].a,
@@ -318,7 +317,6 @@ it('should insert into one-to-many relation', async function () {
                 d: mem[i].d.map((x) => {return {da: x.da, db: x.db}}),
                 // d is an array of [{da: 123, db: "abc"}, {da: 234, db: "def"}, ... ]
             });
-        console.log("done big insert")
     }
 
     // test
