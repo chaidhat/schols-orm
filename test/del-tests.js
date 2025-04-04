@@ -1,4 +1,7 @@
-const common = require("./common");
+import mocha from 'mocha';
+const it = mocha.it;
+
+import common from "./common";
 const options = common.options;
 const assert = common.assert;
 const orm = common.orm;
@@ -6,9 +9,9 @@ const orm = common.orm;
 // import helper functions
 const randomStr = common.randomStr;
 const randomInt = common.randomInt;
-const sqlDoesTableExist = common.sqlDoesTableExist;
-const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
-const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
+//const sqlDoesTableExist = common.sqlDoesTableExist;
+//const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
+//const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
 
 it("can deleteFrom a table", async function () {
     // setup 
@@ -44,7 +47,7 @@ it("can deleteFrom a table", async function () {
     for (let i = 0; i < 10; i++) {
         const randomIndex = randomInt(1, mem.length);
         const memEntry = mem[randomIndex - 1];
-        const res = await options.debugTestTable.deleteFrom({ debugTestTableId: memEntry.debugTestTableId });
+        await options.debugTestTable.deleteFrom({ debugTestTableId: memEntry.debugTestTableId });
         mem.splice(randomIndex - 1, 1);
     }
 

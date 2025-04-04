@@ -1,14 +1,21 @@
-const common = require("./common");
+import mocha from 'mocha';
+const describe = mocha.describe;
+const it = mocha.it;
+const beforeEach = mocha.beforeEach;
+const afterEach = mocha.afterEach;
+const xdescribe = mocha.xdescribe;
+
+import common from "./common";
 const options = common.options;
 const assert = common.assert;
 const orm = common.orm;
 
 // import helper functions
-const randomStr = common.randomStr;
-const randomInt = common.randomInt;
+//const randomStr = common.randomStr;
+//const randomInt = common.randomInt;
 const sqlDoesTableExist = common.sqlDoesTableExist;
-const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
-const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
+//const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
+//const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
 
 
 // assume connection is OK already
@@ -33,6 +40,7 @@ async function cleanupTests() {
 
 module.exports.runTests = runTests;
 async function runTests() {
+
     describe('orm parser', function () {
         it('can tokenize', async function () {
             const tokens = orm.tokenize("varchar(24) userId");
@@ -60,22 +68,22 @@ async function runTests() {
             await cleanupTests();
         });
         xdescribe('create tests', function () {
-            require('./create-tests');
+            import('./create-tests');
         });
         xdescribe('select tests', function () {
-            require('./select-tests');
+            import('./select-tests');
         });
         describe('insert tests', function () {
-            require('./insert-tests');
+            import('./insert-tests');
         });
         xdescribe('update tests', function () {
-            require('./update-tests');
+            import('./update-tests');
         });
         xdescribe('del tests', function () {
-            require('./del-tests');
+            import('./del-tests');
         });
         xdescribe('transaction tests', function () {
-            require('./transaction-tests');
+            import('./transaction-tests');
         });
     });
 }

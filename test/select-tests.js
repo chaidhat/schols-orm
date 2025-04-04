@@ -1,5 +1,7 @@
+import mocha from 'mocha';
+const it = mocha.it;
 
-const common = require("./common");
+import common from "./common";
 const options = common.options;
 const assert = common.assert;
 const orm = common.orm;
@@ -7,9 +9,9 @@ const orm = common.orm;
 // import helper functions
 const randomStr = common.randomStr;
 const randomInt = common.randomInt;
-const sqlDoesTableExist = common.sqlDoesTableExist;
-const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
-const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
+// const sqlDoesTableExist = common.sqlDoesTableExist;
+// const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
+// const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
 
 it('can select all from table', async function () {
     // setup 
@@ -163,6 +165,7 @@ it('can select and return multiple answers', async function () {
             countOfTrues++;
         }
     }
+    assert.equal(res.length, countOfTrues);
 });
 it("can select by passing multiple properties into where", async function () {
     // setup 

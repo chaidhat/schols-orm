@@ -1,14 +1,17 @@
-const common = require("./common");
+import mocha from 'mocha';
+const it = mocha.it;
+
+import common from "./common";
 const options = common.options;
 const assert = common.assert;
 const orm = common.orm;
 
 // import helper functions
-const randomStr = common.randomStr;
-const randomInt = common.randomInt;
+// const randomStr = common.randomStr;
+// const randomInt = common.randomInt;
 const sqlDoesTableExist = common.sqlDoesTableExist;
-const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
-const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
+// const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
+// const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
 
 it('can create a transaction without affecting previous data', async function () {
     // steps: 

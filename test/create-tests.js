@@ -1,12 +1,14 @@
+import mocha from 'mocha';
+const it = mocha.it;
 
-const common = require("./common");
+import common from "./common";
 const options = common.options;
 const assert = common.assert;
 const orm = common.orm;
 
 // import helper functions
-const randomStr = common.randomStr;
-const randomInt = common.randomInt;
+//const randomStr = common.randomStr;
+//const randomInt = common.randomInt;
 const sqlDoesTableExist = common.sqlDoesTableExist;
 const sqlDoesColumnNameExistInTable = common.sqlDoesColumnNameExistInTable;
 const sqlIsColumnRightDataType = common.sqlIsColumnRightDataType;
@@ -109,7 +111,6 @@ it('should fail with two duplicate properties', async function () {
                         name: "a", // DUPLICATE NAME
                         type: "varchar(256)"
                     },
-                    ,
                 ]);
             await options.debugTestTable.init();
         });
