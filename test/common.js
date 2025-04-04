@@ -1,5 +1,5 @@
-const assert = require('assert');
-const orm = require('../lib/orm');
+import assert from 'assert';
+import orm from '../lib/orm';
 const options = {
     foo: "foo",
     debugTestTable: undefined,
